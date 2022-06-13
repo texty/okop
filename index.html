@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    
+
+</head>
+
+<style>
+
+#chart {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+}
+
+#background-image {
+    width: 100%;
+    position:absolute;
+    top: 0;
+    left:0;
+    z-index: -1;
+}
+
+#timer {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 36px;
+}
+</style>
+<body>
+
+    <div id='chart'>
+        <img id='background-image' src='okop.jpg'/> 
+        <div id='timer'>00:<span>00</span></div>
+    </div>
+    <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
+
+    <script src="https://d3js.org/d3.v7.js"></script>
+
+
+
+    <script>
+        // set up
+  
+        const margin = { top: 5, bottom: 5, left: 5, right: 5 };
+  
+        const width = 1566 - margin.left - margin.right;
+        const height = 1011 - margin.top - margin.bottom;
+
+  
+        const svg = d3.select('#chart')
+          .append('svg')
+            .attr('viewBox', '0 0 1566 1011')
+            .attr('width', '100%')
+            .attr('height', '100%');
+
+        var defs = svg.append("defs");
+        var dropShadowFilter = defs.append('svg:filter')
+        .attr('id', 'drop-shadow')
+        .attr('filterUnits', "userSpaceOnUse")
+        .attr('width', '250%')
+        .attr('height', '250%');
+  
+        const g = svg.append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`);
+  
+ 
+  
+        d3.csv('data.csv').then(function(points){
+          points.forEach(function(d){
+            d.x = Math.floor(Math.random() * (800 - 600)) + 600;
+            d.y = Math.floor(Math.random() * (800 - 200)) + 200;
+            d.sek = +d.sek
+          })
+          
+          var mydata = points.filter(function(d){ return d.figure === 'circle'});
+
+          console.log(mydata)
+
+           drawVertexSet(mydata);
+
+        })
+  
+/*         function getRandomData() {
+          const randX = d3.randomInt(600, 800);
+          const randY = d3.randomInt(200, 800);
+          const numPoints = 110;
+  
+          return d3.range(numPoints).map(() => [randX(), randY()]);
+        }  */
+
+     
+
+  
+        function drawVertexSet(pointSet) {
+
+          //console.log(pointSet)
+
+          g.selectAll('circle.shadow')
+            .data(pointSet)
+            .join('circle')
+            .attr('class', 'shadow')
+            .attr('cx', function(d){ return d.x})
+            .attr('cy', function(d){ return d.y })
+            .style("opacity", 0)
+            .attr('r', 11)
+            .attr('fill', "black")                     
+            .transition()              
+              .duration(100)              
+              .delay((d, i) => (d.sek * 1000)+1900)
+              .style("opacity", 0.4) 
+
+          g.selectAll('circle.shelling')
+            .data(pointSet)
+            .join('circle')
+            .attr('class', 'shelling')
+            .attr('cx', 10000)
+            .attr('cy', 500)
+            .attr('r', 5)
+            .attr('fill', "red")     
+            .on('click', function (d){
+              console.log(d.x, d.y)
+            })           
+            .transition()              
+              .duration(2000)              
+              .delay((d, i) => d.sek * 1000)              
+              .attr('cx', function(d){ return d.x})
+              .attr('cy', function(d){ return d.y })                  
+              
+        }
+  
+        //drawVertexSet(getRandomData());
+
+
+  function gridData(xVal, yVal, S) {
+    var data = new Array();
+    var xpos = xVal; //starting xpos and ypos at 1 so the stroke will show when we make the grid below
+    var ypos = yVal;
+    var width = 35;
+    var height = 35;
+    var sek = S;
+	
+	// iterate for rows	
+	for (var row = 0; row < 5; row++) {
+	//	data.push( new Array() );
+		
+		// iterate for cells/columns inside rows
+	for (var column = 0; column < 5; column++) {
+			data.push({
+				x: xpos,
+				y: ypos,
+				width: width,
+				height: height,
+				second: sek
+        })
+        // increment the x position. I.e. move it over by 50 (width variable)
+        xpos += width;
+        sek = sek + 1
+      }
+      // reset the x position after a row is complete
+      xpos = xVal;
+      // increment the y position for the next row. Move it down 50 (height variable)
+      ypos += height;	
+    }
+    return data;
+  }
+
+var gridData1 = gridData(640, 300, 1);	
+console.log(gridData1);
+var gridData2 = gridData(600, 550, 6);
+var gridData3 = gridData(500, 400, 11);	
+// I like to log the data to the console for quick debugging
+
+	
+svg.selectAll(".square-1")
+    .data(gridData1)
+    .enter()
+    .append("rect")
+    .attr("class","square-1")
+    .attr("x", function(d) { return d.x; })
+    .attr("y", function(d) { return d.y; })
+    .attr("width", function(d) { return d.width; })
+    .attr("height", function(d) { return d.height; })  
+    .style("fill", "red")	
+    .style('opacity', 0)
+    .transition()              
+    .duration(100) 
+    .delay((d, i) => (d.second * 1000)) 
+    .style('opacity', 0.4);
+    
+
+
+  svg.selectAll(".square-2")
+    .data(gridData2)
+    .enter()
+    .append("rect")
+    .attr("class","square-2")
+    /* .attr('x', 10000)
+    .attr('y', 500) */
+    .attr("x", function(d) { return d.x; })
+    .attr("y", function(d) { return d.y; })
+    .attr("width", function(d) { return d.width; })
+    .attr("height", function(d) { return d.height; })  
+    .style("fill", "red")	
+    .style('opacity', 0)
+    .transition()              
+    .duration(100) 
+    .delay((d, i) => (d.second * 1050)) 
+    .style('opacity', 0.4);
+    
+
+  svg.selectAll(".square-3")
+    .data(gridData3)
+    .enter()
+    .append("rect")
+    .attr("class","square-3")
+    .attr("x", function(d) { return d.x; })
+    .attr("y", function(d) { return d.y; })
+    .attr("width", function(d) { return d.width; })
+    .attr("height", function(d) { return d.height; })  
+    .style("fill", "red")	
+    .style('opacity', 0)
+    .transition()              
+    .duration(100) 
+    .delay((d, i) => (d.second * 1074)) 
+    .style('opacity', 0.4);
+
+    var seconds = 0;
+    var timer;
+    function myFunction() {      
+      if (seconds < 10 ) { // so it doesn't go to -1
+        d3.select("#timer span").html("0"+ seconds.toString());
+        seconds++;
+      } else if(seconds >= 10 && seconds <= 60){
+        d3.select("#timer span").html(seconds);
+        seconds++;
+      } else {
+        clearInterval(timer);        
+      }
+    }
+
+  if(!timer) {
+    timer = window.setInterval(function() { 
+      myFunction();
+    }, 1000); // every second
+  }
+
+//document.getElementById("timer").innerHTML="1:00"; 
+
+
+
+        
+        </script>
+    
+</body>
+</html>
