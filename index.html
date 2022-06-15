@@ -44,7 +44,7 @@
         <div id='timer'>00:<span>00</span></div>
     </div>
 
-   <!--  <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)" >    
+    <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)" >    
       <source src="sounds/122mm incoming 16 in a minute.mp3" type="audio/mpeg" >
     Your browser does not support the audio element.
     </audio>
@@ -62,7 +62,7 @@
     <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)">    
       <source src="sounds/smerch IN.mp3" type="audio/mpeg" >
     Your browser does not support the audio element.
-    </audio>  -->  
+    </audio>  
 
     <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
 
@@ -85,10 +85,7 @@
 
         //Create a radial gradient
         defs.append("radialGradient")
-          .attr("id", "sun-gradient")
-          /* .attr("cx", "50%")	//not really needed, since 50% is the default
-          .attr("cy", "50%")	//not really needed, since 50% is the default
-          .attr("r", "50%")	//not really needed, since 50% is the default */
+          .attr("id", "sun-gradient")         
           .selectAll("stop")
           .data([
               {offset: "0%", color: "red"},
@@ -100,9 +97,10 @@
           .attr("offset", function(d) { return d.offset; })
           .attr("stop-color", function(d) { return d.color; });
   
+
+
         const g = svg.append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`);
-  
+            .attr('transform', `translate(${margin.left},${margin.top})`); 
  
   
         d3.csv('data.csv').then(function(points){
