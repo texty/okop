@@ -190,17 +190,20 @@
             .attr('class', 'shelling')
             .attr('cx', 2000)
             .attr('cy', 500)
-            .attr('r', 12)
+            .attr('r', 6)
             .style("fill", "red")    
             .on('click', function (d){
               console.log(d.x, d.y)
             })           
             .transition()              
-              .duration(1000)              
+            .duration(1000)              
               .delay((d, i) => d.sek * 1000)              
               .attr('cx', function(d){ return d.x})
               .attr('cy', function(d){ return d.y })
-              .style("fill", "url(#sun-gradient)");
+              .on("end", function(){
+                d3.select(this).style("fill", "url(#sun-gradient)").attr('r', 12);
+              });
+             
 
               
               
