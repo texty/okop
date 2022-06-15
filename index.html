@@ -113,18 +113,18 @@
             var data = new Array();
             var xpos = xVal; 
             var ypos = yVal;
-            var width = 35;
-            var height = 35;
+            var width = 20;
+            var height = 25;
             var sek = S;
 
-            var original = Array.from({length: S+20}, (_, i) => i + S);
+            var original = Array.from({length: S+40}, (_, i) => i + S);
             var copy = [].concat(original);
             copy.sort(function(){  return 0.5 - Math.random();  });
           
           // iterate for rows	
           for (var row = 0; row < 5; row++) {		
             // iterate for cells/columns inside rows
-          for (var column = 0; column < 5; column++) {
+          for (var column = 0; column < 8; column++) {
               data.push({
                 x: xpos,
                 y: ypos,
@@ -172,7 +172,7 @@
         function drawVertexSet(pointSet) { 
 
 
-          var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
+           var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
           var audio2 = new Audio('sounds/122mm incoming 8 in a minute.mp3');
           var audio3 = new Audio('sounds/122mm incoming 4 in a minute.mp3');
           var audio4 = new Audio('sounds/smerch IN.mp3');
@@ -181,17 +181,17 @@
             audio2.play(); 
             audio3.play(); 
             audio4.play(); 
-          }, 1000)
+          }, 1000)  
             
 
           g.selectAll('circle.shelling')
             .data(pointSet)
             .join('circle')
             .attr('class', 'shelling')
-            .attr('cx', 10000)
+            .attr('cx', 2000)
             .attr('cy', 500)
             .attr('r', 12)
-            .style("fill", "url(#sun-gradient)")    
+            .style("fill", "red")    
             .on('click', function (d){
               console.log(d.x, d.y)
             })           
@@ -199,7 +199,13 @@
               .duration(1000)              
               .delay((d, i) => d.sek * 1000)              
               .attr('cx', function(d){ return d.x})
-              .attr('cy', function(d){ return d.y })   
+              .attr('cy', function(d){ return d.y })
+              .style("fill", "url(#sun-gradient)");
+
+              
+              
+          
+               
               
               
       svg.selectAll(".square-1")
@@ -209,15 +215,15 @@
           .attr("class","square-1")
           .attr('x', 10000)
           .attr('y', 500)
-          .attr("rx", 12)
-          .attr("ry", 12)
+          .attr("rx", 0)
+          .attr("ry", 0)
           .attr("width", function(d) { return d.width  })
           .attr("height", function(d) { return d.height; })  
           .style("fill", "red")	
           .style('opacity', 0.4) 
           .transition()              
-          .duration(1000) 
-          .delay((d, i) => (d.second * 1000)) 
+          .duration(1500) 
+          .delay((d, i) => (d.second * 750)) 
           .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
           .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
 
@@ -229,15 +235,15 @@
           .attr("class","square-2")
           .attr('x', 10000)
           .attr('y', 500)
-          .attr("rx", 12)
-          .attr("ry", 12)
+          .attr("rx", 8)
+          .attr("ry", 8)
           .attr("width", function(d) { return d.width  })
           .attr("height", function(d) { return d.height; })  
           .style("fill", "red")	
           .style('opacity', 0.4) 
           .transition()              
-          .duration(1000) 
-          .delay((d, i) => (d.second * 1000)) 
+          .duration(1500) 
+          .delay((d, i) => (d.second * 500)) 
           .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
           .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); });
           
@@ -250,17 +256,17 @@
           .attr("class","square-3")
           .attr('x', 10000)
           .attr('y', 500)
-          .attr("rx", 12)
-          .attr("ry", 12)
+          .attr("rx", 8)
+          .attr("ry", 8)
           .attr("width", function(d) { return d.width  })
           .attr("height", function(d) { return d.height; })  
           .style("fill", "red")	
           .style('opacity', 0.4) 
           .transition()              
-          .duration(1000) 
-          .delay((d, i) => (d.second * 1000)) 
+          .duration(1500) 
+          .delay((d, i) => (d.second * 500)) 
           .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
-          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
+          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); }) 
 
 
 
