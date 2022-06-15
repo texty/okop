@@ -218,8 +218,8 @@
           .attr("class","square-1")
           .attr('x', 10000)
           .attr('y', 500)
-          .attr("rx", 0)
-          .attr("ry", 0)
+          .attr("rx", 6)
+          .attr("ry", 6)
           .attr("width", function(d) { return d.width  })
           .attr("height", function(d) { return d.height; })  
           .style("fill", "red")	
@@ -229,6 +229,11 @@
           .delay((d, i) => (d.second * 750)) 
           .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
           .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
+          .on("end", function(){
+                d3.select(this)
+                .attr("rx", 6)
+                .attr("ry", 6);
+              });
 
 
         svg.selectAll(".square-2")
@@ -238,8 +243,8 @@
           .attr("class","square-2")
           .attr('x', 10000)
           .attr('y', 500)
-          .attr("rx", 8)
-          .attr("ry", 8)
+          .attr("rx", 6)
+          .attr("ry", 6)
           .attr("width", function(d) { return d.width  })
           .attr("height", function(d) { return d.height; })  
           .style("fill", "red")	
@@ -248,8 +253,12 @@
           .duration(1500) 
           .delay((d, i) => (d.second * 500)) 
           .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
-          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); });
-          
+          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
+          .on("end", function(){
+                d3.select(this)
+                .attr("rx", 0)
+                .attr("ry", 0);
+              });
           
 
           svg.selectAll(".square-3")
@@ -259,8 +268,8 @@
           .attr("class","square-3")
           .attr('x', 10000)
           .attr('y', 500)
-          .attr("rx", 8)
-          .attr("ry", 8)
+          .attr("rx", 6)
+          .attr("ry", 6)
           .attr("width", function(d) { return d.width  })
           .attr("height", function(d) { return d.height; })  
           .style("fill", "red")	
@@ -270,6 +279,11 @@
           .delay((d, i) => (d.second * 500)) 
           .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
           .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); }) 
+          .on("end", function(){
+                d3.select(this)
+                .attr("rx", 0)
+                .attr("ry", 0);
+              });
 
 
 
