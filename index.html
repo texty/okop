@@ -109,7 +109,7 @@
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`); 
 
-            function gridData(xVal, yVal, S) {
+       function gridData(xVal, yVal, S) {
             var data = new Array();
             var xpos = xVal; 
             var ypos = yVal;
@@ -151,8 +151,8 @@
   
         d3.csv('data.csv').then(function(points){
           points.forEach(function(d){
-            d.x = Math.floor(Math.random() * (850 - 500)) + 500;
-            d.y = Math.floor(Math.random() * (800 - 200)) + 200;
+            d.x = Math.floor(Math.random() * (900 - 450)) + 450;
+            d.y = Math.floor(Math.random() * (900 - 100)) + 100;
             d.sek = +d.sek
           })
           
@@ -213,8 +213,7 @@
               
       svg.selectAll(".square-1")
           .data(gridData1)
-          .enter()
-          .append("rect")
+          .join('rect')
           .attr("class","square-1")
           .attr('x', 10000)
           .attr('y', 500)
@@ -238,8 +237,7 @@
 
         svg.selectAll(".square-2")
           .data(gridData2)
-          .enter()
-          .append("rect")
+          .join('rect')
           .attr("class","square-2")
           .attr('x', 10000)
           .attr('y', 500)
@@ -263,8 +261,7 @@
 
           svg.selectAll(".square-3")
           .data(gridData3)
-          .enter()
-          .append("rect")
+          .join('rect')
           .attr("class","square-3")
           .attr('x', 10000)
           .attr('y', 500)
