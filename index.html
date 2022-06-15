@@ -35,15 +35,24 @@
   color: white;
 }
 
+#play {
+  display: block;
+  margin:10px auto;
+}
+
 
 
 </style>
 <body>
 
+  <button id='play'>Почати</button>
+
+
     <div id='chart'>
         <img id='background-image' src='okop.jpg'/> 
         <div id='timer'>00:<span>00</span></div>
     </div>
+
 
    <!--  <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)" >    
       <source src="sounds/122mm incoming 16 in a minute.mp3" type="audio/mpeg" >
@@ -148,7 +157,10 @@
           })
           
           var mydata = points.filter(function(d){ return d.figure === 'circle'});
-          drawVertexSet(mydata);
+          d3.select("#play").on("click", function(){
+            drawVertexSet(mydata);
+          })
+         
 
         }) 
 
@@ -160,9 +172,16 @@
         function drawVertexSet(pointSet) { 
 
 
-          var audio = new Audio('sounds/122mm incoming 16 in a minute.mp3');
-
-          setTimeout(function() { audio.play(); }, 1000)
+          var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
+          var audio2 = new Audio('sounds/122mm incoming 8 in a minute.mp3');
+          var audio3 = new Audio('sounds/122mm incoming 4 in a minute.mp3');
+          var audio4 = new Audio('sounds/smerch IN.mp3');
+          setTimeout(function() { 
+            audio1.play(); 
+            audio2.play(); 
+            audio3.play(); 
+            audio4.play(); 
+          }, 1000)
             
 
           g.selectAll('circle.shelling')
