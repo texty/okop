@@ -38,14 +38,14 @@
 
 
 </style>
-<body onload="autoNotify()">
+<body>
 
     <div id='chart'>
         <img id='background-image' src='okop.jpg'/> 
         <div id='timer'>00:<span>00</span></div>
     </div>
 
-    <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)" >    
+   <!--  <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)" >    
       <source src="sounds/122mm incoming 16 in a minute.mp3" type="audio/mpeg" >
     Your browser does not support the audio element.
     </audio>
@@ -60,7 +60,7 @@
 
     <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)">    
       <source src="sounds/smerch IN.mp3" type="audio/mpeg" >   
-    </audio>  
+    </audio>   -->
 
     <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
 
@@ -99,6 +99,45 @@
 
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`); 
+
+            function gridData(xVal, yVal, S) {
+            var data = new Array();
+            var xpos = xVal; 
+            var ypos = yVal;
+            var width = 35;
+            var height = 35;
+            var sek = S;
+
+            var original = Array.from({length: S+20}, (_, i) => i + S);
+            var copy = [].concat(original);
+            copy.sort(function(){  return 0.5 - Math.random();  });
+          
+          // iterate for rows	
+          for (var row = 0; row < 5; row++) {		
+            // iterate for cells/columns inside rows
+          for (var column = 0; column < 5; column++) {
+              data.push({
+                x: xpos,
+                y: ypos,
+                width: width,
+                height: height,
+                second: copy[sek]       
+                })
+                // increment the x position. I.e. move it over by 50 (width variable)
+                xpos += width;
+                sek = sek + 1
+              }
+              // reset the x position after a row is complete
+              xpos = xVal;
+              // increment the y position for the next row. Move it down 50 (height variable)
+              ypos += height;	
+            }
+            return data;
+          }
+
+          var gridData1 = gridData(640, 300, 1);
+          var gridData2 = gridData(600, 550, 6);
+          var gridData3 = gridData(500, 400, 11);	
  
   
         d3.csv('data.csv').then(function(points){
@@ -113,10 +152,18 @@
 
         }) 
 
+        
+
      
 
   
         function drawVertexSet(pointSet) { 
+
+
+          var audio = new Audio('sounds/122mm incoming 16 in a minute.mp3');
+
+          setTimeout(function() { audio.play(); }, 1000)
+            
 
           g.selectAll('circle.shelling')
             .data(pointSet)
@@ -133,133 +180,99 @@
               .duration(1000)              
               .delay((d, i) => d.sek * 1000)              
               .attr('cx', function(d){ return d.x})
-              .attr('cy', function(d){ return d.y })                  
+              .attr('cy', function(d){ return d.y })   
+              
+              
+      svg.selectAll(".square-1")
+          .data(gridData1)
+          .enter()
+          .append("rect")
+          .attr("class","square-1")
+          .attr('x', 10000)
+          .attr('y', 500)
+          .attr("rx", 12)
+          .attr("ry", 12)
+          .attr("width", function(d) { return d.width  })
+          .attr("height", function(d) { return d.height; })  
+          .style("fill", "red")	
+          .style('opacity', 0.4) 
+          .transition()              
+          .duration(1000) 
+          .delay((d, i) => (d.second * 1000)) 
+          .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
+          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
+
+
+        svg.selectAll(".square-2")
+          .data(gridData2)
+          .enter()
+          .append("rect")
+          .attr("class","square-2")
+          .attr('x', 10000)
+          .attr('y', 500)
+          .attr("rx", 12)
+          .attr("ry", 12)
+          .attr("width", function(d) { return d.width  })
+          .attr("height", function(d) { return d.height; })  
+          .style("fill", "red")	
+          .style('opacity', 0.4) 
+          .transition()              
+          .duration(1000) 
+          .delay((d, i) => (d.second * 1000)) 
+          .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
+          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); });
+          
+          
+
+          svg.selectAll(".square-3")
+          .data(gridData3)
+          .enter()
+          .append("rect")
+          .attr("class","square-3")
+          .attr('x', 10000)
+          .attr('y', 500)
+          .attr("rx", 12)
+          .attr("ry", 12)
+          .attr("width", function(d) { return d.width  })
+          .attr("height", function(d) { return d.height; })  
+          .style("fill", "red")	
+          .style('opacity', 0.4) 
+          .transition()              
+          .duration(1000) 
+          .delay((d, i) => (d.second * 1000)) 
+          .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
+          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
+
+
+
+          /* timer */
+          var seconds = 0;
+          var timer;
+          function myFunction() {      
+            if (seconds < 10 ) { // so it doesn't go to -1
+              d3.select("#timer span").html("0"+ seconds.toString());
+              seconds++;
+            } else if(seconds >= 10 && seconds <= 60){
+              d3.select("#timer span").html(seconds);
+              seconds++;
+            } else {
+              clearInterval(timer);        
+            }
+          }
+
+          if(!timer) {
+            timer = window.setInterval(function() { 
+              myFunction();
+            }, 1000); 
+          }
+
               
         } 
 
 
-  function gridData(xVal, yVal, S) {
-    var data = new Array();
-    var xpos = xVal; 
-    var ypos = yVal;
-    var width = 35;
-    var height = 35;
-    var sek = S;
 
-    var original = Array.from({length: S+20}, (_, i) => i + S);
-    var copy = [].concat(original);
-    copy.sort(function(){  return 0.5 - Math.random();  });
-	
-	// iterate for rows	
-	for (var row = 0; row < 5; row++) {		
-		// iterate for cells/columns inside rows
-	for (var column = 0; column < 5; column++) {
-			data.push({
-				x: xpos,
-				y: ypos,
-				width: width,
-				height: height,
-				second: copy[sek]       
-        })
-        // increment the x position. I.e. move it over by 50 (width variable)
-        xpos += width;
-        sek = sek + 1
-      }
-      // reset the x position after a row is complete
-      xpos = xVal;
-      // increment the y position for the next row. Move it down 50 (height variable)
-      ypos += height;	
-    }
-    return data;
-  }
-
-  var gridData1 = gridData(640, 300, 1);
-  var gridData2 = gridData(600, 550, 6);
-  var gridData3 = gridData(500, 400, 11);	
     
-  svg.selectAll(".square-1")
-      .data(gridData1)
-      .enter()
-      .append("rect")
-      .attr("class","square-1")
-      .attr('x', 10000)
-      .attr('y', 500)
-      .attr("rx", 12)
-      .attr("ry", 12)
-      .attr("width", function(d) { return d.width  })
-      .attr("height", function(d) { return d.height; })  
-      .style("fill", "red")	
-      .style('opacity', 0.4) 
-      .transition()              
-      .duration(1000) 
-      .delay((d, i) => (d.second * 1000)) 
-      .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
-      .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
-
-
-    svg.selectAll(".square-2")
-      .data(gridData2)
-      .enter()
-      .append("rect")
-      .attr("class","square-2")
-      .attr('x', 10000)
-      .attr('y', 500)
-      .attr("rx", 12)
-      .attr("ry", 12)
-      .attr("width", function(d) { return d.width  })
-      .attr("height", function(d) { return d.height; })  
-      .style("fill", "red")	
-      .style('opacity', 0.4) 
-      .transition()              
-      .duration(1000) 
-      .delay((d, i) => (d.second * 1000)) 
-      .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
-      .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); });
-      
-      
-
-      svg.selectAll(".square-3")
-      .data(gridData3)
-      .enter()
-      .append("rect")
-      .attr("class","square-3")
-      .attr('x', 10000)
-      .attr('y', 500)
-      .attr("rx", 12)
-      .attr("ry", 12)
-      .attr("width", function(d) { return d.width  })
-      .attr("height", function(d) { return d.height; })  
-      .style("fill", "red")	
-      .style('opacity', 0.4) 
-      .transition()              
-      .duration(1000) 
-      .delay((d, i) => (d.second * 1000)) 
-      .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
-      .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
-
-
-
-      /* timer */
-      var seconds = 0;
-      var timer;
-      function myFunction() {      
-        if (seconds < 10 ) { // so it doesn't go to -1
-          d3.select("#timer span").html("0"+ seconds.toString());
-          seconds++;
-        } else if(seconds >= 10 && seconds <= 60){
-          d3.select("#timer span").html(seconds);
-          seconds++;
-        } else {
-          clearInterval(timer);        
-        }
-      }
-
-      if(!timer) {
-        timer = window.setInterval(function() { 
-          myFunction();
-        }, 1000); 
-      }
-
+ 
         
     </script>
     
