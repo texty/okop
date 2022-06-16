@@ -6,30 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap" rel="stylesheet">
 
 </head>
 
 <style>
 
+  main {
+    font-family: 'PT Mono', monospace;
+    max-width:1400px;
+    margin:auto;
+    position: relative;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+  }
+
+  #viz {
+    display: grid;
+    grid-template-columns: 20px auto;
+  }
+
 #chart {
     position: relative;
     width: 100%;
     max-width: 1000px;
-    margin: auto;
+    margin: 0;
 }
 
+
 #background-image {
-    width: 100%;
+    width: 100%;    
     position:absolute;
     top: 0;
-    left:0;
+    left: 0%;
     z-index: -1;
+}
+
+#legend {
+  padding-left: 20px;
 }
 
 #timer {
   position: absolute;
-  bottom: 10px;
+  bottom: 25px;
   right: 10px;
   font-size: 36px;
   color: white;
@@ -40,36 +61,79 @@
   margin:10px auto;
 }
 
+.name {
+  font-size: 22px;
+  margin-bottom:0;
+}
+
+.amount {
+  margin-top:0;
+  color: red;
+  font-size: 18px;
+}
+
+#side-text {
+  position: relative;  
+  background: none;  
+  margin:0;
+  height: 95%;
+}
+
+#side-text::after {
+  position: absolute;
+  content: "2 000 м";
+  font-size: 22px;
+  color: #222;
+  text-align: center;
+  transform: rotate(-180deg);
+  right: 0;
+  top: -1px;
+  bottom: -1px;
+  writing-mode: vertical-lr;
+}
+
+.bottom-text {
+  width: 100%;
+  text-align: center;
+  font-size: 22px;
+  margin-top: -15px;
+}
 
 
 </style>
 <body>
 
   <button id='play'>Почати</button>
-
-
-    <div id='chart'>
+  
+  <main>
+    <p style='grid-column: 1/-1; margin-left: 20px;'>Одна хвилина в умовному українському окопі:</p>
+    
+    <div id='viz'>
+      <div style='height: 100%;'><p id='side-text'></p></div>
+      <div id='chart'>
         <img id='background-image' src='okop.jpg'/> 
         <div id='timer'>00:<span>00</span></div>
+        <svg></svg>
+        <div class='bottom-text'>3 000 м</div>
+      </div>
+      
+    </div>    
+    <div id='legend'>
+      <p style='margin-top: 0'>Кількість випущених снарядів:</p>     
+      <p class='name'>САУ Акація-М</p>
+      <p id='minute-4' class='amount'>0</p>
+
+      <p class='name'>САУ Мста-С</p>
+      <p id='minute-8' class='amount'>0</p>
+
+      <p class='name'>САУ Коаліція-СВ</p>
+      <p id='minute-16' class='amount'>0</p>
+
+      <p class='name'>РСЗВ Град</p>
+      <p id='grad' class='amount'>0</p>
+
     </div>
-
-
-   <!--  <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)" >    
-      <source src="sounds/122mm incoming 16 in a minute.mp3" type="audio/mpeg" >
-    Your browser does not support the audio element.
-    </audio>
-
-     <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)">    
-      <source src="sounds/122mm incoming 8 in a minute.mp3" type="audio/mpeg" >   
-    </audio> 
-
-    <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)">    
-      <source src="sounds/122mm incoming 4 in a minute.mp3" type="audio/mpeg">   
-    </audio>
-
-    <audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1000)">    
-      <source src="sounds/smerch IN.mp3" type="audio/mpeg" >   
-    </audio>   -->
+  </main>
 
     <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
 
@@ -78,15 +142,15 @@
 
 
     <script>
-        const margin = { top: 5, bottom: 5, left: 5, right: 5 };  
-        const width = 1566 - margin.left - margin.right;
-        const height = 1011 - margin.top - margin.bottom;
+        const width = 1566;
+        const height = 1011;
 
         const svg = d3.select('#chart')
-          .append('svg')
+            .select('svg')
             .attr('viewBox', '0 0 1566 1011')
             .attr('width', '100%')
-            .attr('height', '100%');
+            .attr('height', '100%');        
+
 
         var defs = svg.append("defs");
 
@@ -106,8 +170,7 @@
   
 
 
-        const g = svg.append('g')
-            .attr('transform', `translate(${margin.left},${margin.top})`); 
+        const g = svg.append('g'); 
 
        function gridData(xVal, yVal, S) {
             var data = new Array();
@@ -170,9 +233,13 @@
 
   
         function drawVertexSet(pointSet) { 
+          var grad = 0;
+          var type1 = 0;
+          var type2 = 0;
+          var type3 = 0;
 
 
-           var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
+         /*  var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
           var audio2 = new Audio('sounds/122mm incoming 8 in a minute.mp3');
           var audio3 = new Audio('sounds/122mm incoming 4 in a minute.mp3');
           var audio4 = new Audio('sounds/smerch IN.mp3');
@@ -182,7 +249,11 @@
             audio3.play(); 
             audio4.play(); 
           }, 1000)  
-            
+
+          setTimeout(function() {             
+            audio4.muted = true; 
+          }, 36000)   */
+           
 
           g.selectAll('circle.shelling')
             .data(pointSet)
@@ -200,8 +271,20 @@
               .delay((d, i) => d.sek * 1000)              
               .attr('cx', function(d){ return d.x})
               .attr('cy', function(d){ return d.y })
-              .on("end", function(){
+              .on("end", function(d){
                 d3.select(this).style("fill", "url(#sun-gradient)").attr('r', 12);
+                //console.log(d);
+                if(d.type === '1'){
+                  type1 = type1 + 1
+                  d3.select('#minute-4').html(type1)
+                } else if (d.type === '2'){
+                  type2 = type2 + 1
+                  d3.select('#minute-8').html(type2)
+                } else if (d.type === '3'){
+                  type3 = type3 + 1
+                  d3.select('#minute-16').html(type3)
+                }
+
               });
              
 
@@ -228,11 +311,16 @@
           .delay((d, i) => (d.second * 750)) 
           .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
           .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
-          .on("end", function(){
+          .on("end", function(d){
                 d3.select(this)
                 .attr("rx", 6)
-                .attr("ry", 6);
+                .attr("ry", 6);  
+                grad = grad + 1;
+                d3.select('#grad').text(grad)
+                
               });
+
+       
 
 
         svg.selectAll(".square-2")
@@ -256,6 +344,8 @@
                 d3.select(this)
                 .attr("rx", 0)
                 .attr("ry", 0);
+                grad = grad + 1;
+                d3.select('#grad').text(grad)
               });
           
 
@@ -280,6 +370,8 @@
                 d3.select(this)
                 .attr("rx", 0)
                 .attr("ry", 0);
+                grad = grad + 1;
+                d3.select('#grad').text(grad)
               });
 
 
