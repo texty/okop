@@ -165,4 +165,9 @@ main {
   margin-right: 20px;
   cursor: pointer;
 }
+
+g.tick text {
+  fill: white;
+  font-size: 18px;
+}
 /*# sourceMappingURL=style.css.map */
