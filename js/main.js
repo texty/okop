@@ -100,6 +100,8 @@ var mute = false;
 
 
 function drawVertexSet(pointSet) { 
+    var seconds = 0;
+    var timer;
     var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
     var audio2 = new Audio('sounds/122mm incoming 8 in a minute.mp3');
     var audio3 = new Audio('sounds/122mm incoming 4 in a minute.mp3');
@@ -123,7 +125,9 @@ function drawVertexSet(pointSet) {
         audio1.muted = false;  
         audio2.muted = false; 
         audio3.muted = false; 
-        audio4.muted = false; 
+        if(seconds < 34){
+            audio4.muted = false; 
+        }
     }
     
     d3.select("#mute").on("click", function(){
@@ -209,8 +213,7 @@ function drawVertexSet(pointSet) {
             });
 
   /* timer */
-  var seconds = 0;
-  var timer;
+  
   function startTimer() {      
     if (seconds < 10 ) { 
       d3.select("#timer span").html("0"+ seconds.toString());
