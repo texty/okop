@@ -107,10 +107,30 @@ main {
   margin-bottom: 0;
 }
 
+.name span.arta {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  background-color: red;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.name span.rszv {
+  display: inline-block;
+  width: 10px;
+  height: 15px;
+  margin-right: 5px;
+  background-color: red;
+  opacity: 0.5;
+}
+
 .amount {
   margin-top: 0;
   color: red;
   font-size: 18px;
+  margin-left: 15px;
 }
 
 #side-text {
