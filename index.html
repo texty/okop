@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap" rel="stylesheet">
 
+
 </head>
 
 <style>
@@ -99,6 +100,9 @@
   margin-top: -15px;
 }
 
+g.tick line { stroke: white }
+g.tick text { fill: white; font-size: 18px; }
+path.domain { stroke: white }
 
 </style>
 <body>
@@ -149,8 +153,17 @@
             .select('svg')
             .attr('viewBox', '0 0 1566 1011')
             .attr('width', '100%')
-            .attr('height', '100%');        
+            .attr('height', '100%'); 
 
+        
+        /* var scale = d3.scaleLinear()
+            .domain([0, 1566])
+            .range([0, 1566]);
+
+        var x_axis = d3.axisBottom()
+              .scale(scale);
+
+        svg.append("g").call(x_axis); */
 
         var defs = svg.append("defs");
 
@@ -170,7 +183,7 @@
   
 
 
-        const g = svg.append('g'); 
+      const g = svg.append('g'); 
 
        function gridData(xVal, yVal, S) {
             var data = new Array();
@@ -210,16 +223,38 @@
           var gridData1 = gridData(640, 300, 1);
           var gridData2 = gridData(600, 550, 6);
           var gridData3 = gridData(500, 400, 11);	
+
+          
+          const round_to_precision = (x, precision) => {
+              var y = +x + (precision === undefined ? 0.5 : precision/2);
+              return y - (y % (precision === undefined ? 1 : +precision));
+          }
+
+
+        
  
   
         d3.csv('data.csv').then(function(points){
-          points.forEach(function(d){
-            d.x = Math.floor(Math.random() * (900 - 450)) + 450;
-            d.y = Math.floor(Math.random() * (900 - 100)) + 100;
+          points.forEach(function(d, i){
+
+            
+            step = 1;
+            
+            if(i <= 60){             
+              d.x = randn_bm(400, 950, 1);
+              d.y = Math.floor(Math.random() * (800 - 200)) + 200;
+            }             
+            else {
+              d.x = Math.floor(Math.random() * (900 - 450)) + 450;
+              d.y = Math.floor(Math.random() * (850 - 200)) + 200;
+            }
+             
             d.sek = +d.sek
           })
           
-          var mydata = points.filter(function(d){ return d.figure === 'circle'});
+          var mydata = points.filter(function(d){ return d.figure === 'circle'});        
+          
+          console.log(mydata);
           d3.select("#play").on("click", function(){
             drawVertexSet(mydata);
           })
@@ -239,7 +274,7 @@
           var type3 = 0;
 
 
-         /*  var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
+        var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
           var audio2 = new Audio('sounds/122mm incoming 8 in a minute.mp3');
           var audio3 = new Audio('sounds/122mm incoming 4 in a minute.mp3');
           var audio4 = new Audio('sounds/smerch IN.mp3');
@@ -252,7 +287,7 @@
 
           setTimeout(function() {             
             audio4.muted = true; 
-          }, 36000)   */
+          }, 34000)  
            
 
           g.selectAll('circle.shelling')
@@ -269,11 +304,10 @@
             .transition()              
             .duration(1000)              
               .delay((d, i) => d.sek * 1000)              
-              .attr('cx', function(d){ return d.x})
+              .attr('cx', function(d){ return d.x })
               .attr('cy', function(d){ return d.y })
               .on("end", function(d){
-                d3.select(this).style("fill", "url(#sun-gradient)").attr('r', 12);
-                //console.log(d);
+                d3.select(this).style("fill", "url(#sun-gradient)").attr('r', 12);                
                 if(d.type === '1'){
                   type1 = type1 + 1
                   d3.select('#minute-4').html(type1)
@@ -284,7 +318,6 @@
                   type3 = type3 + 1
                   d3.select('#minute-16').html(type3)
                 }
-
               });
              
 
@@ -372,7 +405,7 @@
                 .attr("ry", 0);
                 grad = grad + 1;
                 d3.select('#grad').text(grad)
-              });
+              }); 
 
 
 
@@ -401,6 +434,20 @@
         } 
 
 
+        const randn_bm = (min, max, skew) => {
+            var u = 0, v = 0;
+            while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+            while(v === 0) v = Math.random();
+            let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+
+            num = num / 10.0 + 0.5; // Translate to 0 -> 1
+            if (num > 1 || num < 0) num = randn_bm(min, max, skew); // resample between 0 and 1 if out of range
+            num = Math.pow(num, skew); // Skew
+            
+            num *= max - min; // Stretch to fill range
+            num += min; // offset to min
+            return num;
+        }
 
     
  
