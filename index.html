@@ -7,110 +7,27 @@
     <title>Document</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
     <link href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap" rel="stylesheet">
 
+    <link href='css/style.css' rel="stylesheet">
 
 </head>
-
-<style>
-
-  main {
-    font-family: 'PT Mono', monospace;
-    max-width:1400px;
-    margin:auto;
-    position: relative;
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-  }
-
-  #viz {
-    display: grid;
-    grid-template-columns: 20px auto;
-  }
-
-#chart {
-    position: relative;
-    width: 100%;
-    max-width: 1000px;
-    margin: 0;
-}
-
-
-#background-image {
-    width: 100%;    
-    position:absolute;
-    top: 0;
-    left: 0%;
-    z-index: -1;
-}
-
-#legend {
-  padding-left: 20px;
-}
-
-#timer {
-  position: absolute;
-  bottom: 25px;
-  right: 10px;
-  font-size: 36px;
-  color: white;
-}
-
-#play {
-  display: block;
-  margin:10px auto;
-}
-
-.name {
-  font-size: 22px;
-  margin-bottom:0;
-}
-
-.amount {
-  margin-top:0;
-  color: red;
-  font-size: 18px;
-}
-
-#side-text {
-  position: relative;  
-  background: none;  
-  margin:0;
-  height: 95%;
-}
-
-#side-text::after {
-  position: absolute;
-  content: "2 000 м";
-  font-size: 22px;
-  color: #222;
-  text-align: center;
-  transform: rotate(-180deg);
-  right: 0;
-  top: -1px;
-  bottom: -1px;
-  writing-mode: vertical-lr;
-}
-
-.bottom-text {
-  width: 100%;
-  text-align: center;
-  font-size: 22px;
-  margin-top: -15px;
-}
-
-g.tick line { stroke: white }
-g.tick text { fill: white; font-size: 18px; }
-path.domain { stroke: white }
-
-</style>
 <body>
 
-  <button id='play'>Почати</button>
+  
+  
   
   <main>
-    <p style='grid-column: 1/-1; margin-left: 20px;'>Одна хвилина в умовному українському окопі:</p>
+    <div class='chart-title'>
+      <p >Одна хвилина в умовному українському окопі:</p>
+      <div class='button-wrapper'>
+        <button id='play'>Почати</button>
+        <img id='mute' src='img/audio.png'/>
+      </div>
+     
+    </div>
+   
     
     <div id='viz'>
       <div style='height: 100%;'><p id='side-text'></p></div>
@@ -119,9 +36,9 @@ path.domain { stroke: white }
         <div id='timer'>00:<span>00</span></div>
         <svg></svg>
         <div class='bottom-text'>3 000 м</div>
-      </div>
-      
-    </div>    
+      </div>      
+    </div> 
+
     <div id='legend'>
       <p style='margin-top: 0'>Кількість випущених снарядів:</p>     
       <p class='name'>САУ Акація-М</p>
@@ -135,324 +52,13 @@ path.domain { stroke: white }
 
       <p class='name'>РСЗВ Град</p>
       <p id='grad' class='amount'>0</p>
-
     </div>
+
   </main>
 
     <script src='https://code.jquery.com/jquery-3.3.1.min.js'></script>
-
     <script src="https://d3js.org/d3.v7.js"></script>
+    <script src="js/main.js"></script>
 
-
-
-    <script>
-        const width = 1566;
-        const height = 1011;
-
-        const svg = d3.select('#chart')
-            .select('svg')
-            .attr('viewBox', '0 0 1566 1011')
-            .attr('width', '100%')
-            .attr('height', '100%'); 
-
-        
-        /* var scale = d3.scaleLinear()
-            .domain([0, 1566])
-            .range([0, 1566]);
-
-        var x_axis = d3.axisBottom()
-              .scale(scale);
-
-        svg.append("g").call(x_axis); */
-
-        var defs = svg.append("defs");
-
-        //Create a radial gradient
-        defs.append("radialGradient")
-          .attr("id", "sun-gradient")         
-          .selectAll("stop")
-          .data([
-              {offset: "0%", color: "red"},
-              {offset: "40%", color: "red"},
-              {offset: "50%", color: "#00000087"},
-              {offset: "100%", color: "#ff000087"}
-            ])
-          .enter().append("stop")
-          .attr("offset", function(d) { return d.offset; })
-          .attr("stop-color", function(d) { return d.color; });
-  
-
-
-      const g = svg.append('g'); 
-
-       function gridData(xVal, yVal, S) {
-            var data = new Array();
-            var xpos = xVal; 
-            var ypos = yVal;
-            var width = 20;
-            var height = 25;
-            var sek = S;
-
-            var original = Array.from({length: S+40}, (_, i) => i + S);
-            var copy = [].concat(original);
-            copy.sort(function(){  return 0.5 - Math.random();  });
-          
-          // iterate for rows	
-          for (var row = 0; row < 5; row++) {		
-            // iterate for cells/columns inside rows
-          for (var column = 0; column < 8; column++) {
-              data.push({
-                x: xpos,
-                y: ypos,
-                width: width,
-                height: height,
-                second: copy[sek]       
-                })
-                // increment the x position. I.e. move it over by 50 (width variable)
-                xpos += width;
-                sek = sek + 1
-              }
-              // reset the x position after a row is complete
-              xpos = xVal;
-              // increment the y position for the next row. Move it down 50 (height variable)
-              ypos += height;	
-            }
-            return data;
-          }
-
-          var gridData1 = gridData(640, 300, 1);
-          var gridData2 = gridData(600, 550, 6);
-          var gridData3 = gridData(500, 400, 11);	
-
-          
-          const round_to_precision = (x, precision) => {
-              var y = +x + (precision === undefined ? 0.5 : precision/2);
-              return y - (y % (precision === undefined ? 1 : +precision));
-          }
-
-
-        
- 
-  
-        d3.csv('data.csv').then(function(points){
-          points.forEach(function(d, i){
-
-            
-            step = 1;
-            
-            if(i <= 60){             
-              d.x = randn_bm(400, 950, 1);
-              d.y = Math.floor(Math.random() * (800 - 200)) + 200;
-            }             
-            else {
-              d.x = Math.floor(Math.random() * (900 - 450)) + 450;
-              d.y = Math.floor(Math.random() * (850 - 200)) + 200;
-            }
-             
-            d.sek = +d.sek
-          })
-          
-          var mydata = points.filter(function(d){ return d.figure === 'circle'});        
-          
-          console.log(mydata);
-          d3.select("#play").on("click", function(){
-            drawVertexSet(mydata);
-          })
-         
-
-        }) 
-
-        
-
-     
-
-  
-        function drawVertexSet(pointSet) { 
-          var grad = 0;
-          var type1 = 0;
-          var type2 = 0;
-          var type3 = 0;
-
-
-        var audio1 = new Audio('sounds/122mm incoming 16 in a minute.mp3');
-          var audio2 = new Audio('sounds/122mm incoming 8 in a minute.mp3');
-          var audio3 = new Audio('sounds/122mm incoming 4 in a minute.mp3');
-          var audio4 = new Audio('sounds/smerch IN.mp3');
-          setTimeout(function() { 
-            audio1.play(); 
-            audio2.play(); 
-            audio3.play(); 
-            audio4.play(); 
-          }, 1000)  
-
-          setTimeout(function() {             
-            audio4.muted = true; 
-          }, 34000)  
-           
-
-          g.selectAll('circle.shelling')
-            .data(pointSet)
-            .join('circle')
-            .attr('class', 'shelling')
-            .attr('cx', 2000)
-            .attr('cy', 500)
-            .attr('r', 6)
-            .style("fill", "red")    
-            .on('click', function (d){
-              console.log(d.x, d.y)
-            })           
-            .transition()              
-            .duration(1000)              
-              .delay((d, i) => d.sek * 1000)              
-              .attr('cx', function(d){ return d.x })
-              .attr('cy', function(d){ return d.y })
-              .on("end", function(d){
-                d3.select(this).style("fill", "url(#sun-gradient)").attr('r', 12);                
-                if(d.type === '1'){
-                  type1 = type1 + 1
-                  d3.select('#minute-4').html(type1)
-                } else if (d.type === '2'){
-                  type2 = type2 + 1
-                  d3.select('#minute-8').html(type2)
-                } else if (d.type === '3'){
-                  type3 = type3 + 1
-                  d3.select('#minute-16').html(type3)
-                }
-              });
-             
-
-              
-              
-          
-               
-              
-              
-      svg.selectAll(".square-1")
-          .data(gridData1)
-          .join('rect')
-          .attr("class","square-1")
-          .attr('x', 10000)
-          .attr('y', 500)
-          .attr("rx", 6)
-          .attr("ry", 6)
-          .attr("width", function(d) { return d.width  })
-          .attr("height", function(d) { return d.height; })  
-          .style("fill", "red")	
-          .style('opacity', 0.4) 
-          .transition()              
-          .duration(1500) 
-          .delay((d, i) => (d.second * 750)) 
-          .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
-          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
-          .on("end", function(d){
-                d3.select(this)
-                .attr("rx", 6)
-                .attr("ry", 6);  
-                grad = grad + 1;
-                d3.select('#grad').text(grad)
-                
-              });
-
-       
-
-
-        svg.selectAll(".square-2")
-          .data(gridData2)
-          .join('rect')
-          .attr("class","square-2")
-          .attr('x', 10000)
-          .attr('y', 500)
-          .attr("rx", 6)
-          .attr("ry", 6)
-          .attr("width", function(d) { return d.width  })
-          .attr("height", function(d) { return d.height; })  
-          .style("fill", "red")	
-          .style('opacity', 0.4) 
-          .transition()              
-          .duration(1500) 
-          .delay((d, i) => (d.second * 500)) 
-          .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
-          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); })
-          .on("end", function(){
-                d3.select(this)
-                .attr("rx", 0)
-                .attr("ry", 0);
-                grad = grad + 1;
-                d3.select('#grad').text(grad)
-              });
-          
-
-          svg.selectAll(".square-3")
-          .data(gridData3)
-          .join('rect')
-          .attr("class","square-3")
-          .attr('x', 10000)
-          .attr('y', 500)
-          .attr("rx", 6)
-          .attr("ry", 6)
-          .attr("width", function(d) { return d.width  })
-          .attr("height", function(d) { return d.height; })  
-          .style("fill", "red")	
-          .style('opacity', 0.4) 
-          .transition()              
-          .duration(1500) 
-          .delay((d, i) => (d.second * 500)) 
-          .attr("x", function(d) { return d.x + (Math.floor(Math.random() * 11) - 5);  })
-          .attr("y", function(d) { return d.y + (Math.floor(Math.random() * 11) - 5); }) 
-          .on("end", function(){
-                d3.select(this)
-                .attr("rx", 0)
-                .attr("ry", 0);
-                grad = grad + 1;
-                d3.select('#grad').text(grad)
-              }); 
-
-
-
-          /* timer */
-          var seconds = 0;
-          var timer;
-          function myFunction() {      
-            if (seconds < 10 ) { // so it doesn't go to -1
-              d3.select("#timer span").html("0"+ seconds.toString());
-              seconds++;
-            } else if(seconds >= 10 && seconds <= 60){
-              d3.select("#timer span").html(seconds);
-              seconds++;
-            } else {
-              clearInterval(timer);        
-            }
-          }
-
-          if(!timer) {
-            timer = window.setInterval(function() { 
-              myFunction();
-            }, 1000); 
-          }
-
-              
-        } 
-
-
-        const randn_bm = (min, max, skew) => {
-            var u = 0, v = 0;
-            while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
-            while(v === 0) v = Math.random();
-            let num = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
-
-            num = num / 10.0 + 0.5; // Translate to 0 -> 1
-            if (num > 1 || num < 0) num = randn_bm(min, max, skew); // resample between 0 and 1 if out of range
-            num = Math.pow(num, skew); // Skew
-            
-            num *= max - min; // Stretch to fill range
-            num += min; // offset to min
-            return num;
-        }
-
-    
- 
-        
-    </script>
-    
 </body>
 </html>
